@@ -4,4 +4,4 @@ cache: packages
 dist: trusty
 
 script:
-  - echo "First build"  #build.sh
+  - build.sh
