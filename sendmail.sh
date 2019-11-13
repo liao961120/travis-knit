@@ -1,0 +1,1 @@
+python3 sendmail.py "$FILEIO_MSG" "$COMMITTER_EMAIL" "$GMAIL_PASSWORD"
