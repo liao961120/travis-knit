@@ -28,7 +28,7 @@ def sendmail(toEmail, message, gmail_password):
     server.send_message(msg)
     server.quit()
 
-    print(f'Email sent to {toEmail}')
+    print('Email sent to ' + toEmail)
 
 
 # Send Email
@@ -36,4 +36,4 @@ try:
     sendmail(email, message, gmail_password)
     print(email, message)
 except:
-    failed.append(f'failed to sent to {email}')
+    failed.append('failed to sent to ' + email)
