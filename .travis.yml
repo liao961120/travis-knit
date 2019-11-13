@@ -3,11 +3,18 @@ r: 3.5
 cache: packages
 dist: xenial
 
-before_script:
-  - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
-  - echo ${COMMITTER_EMAIL}
-  - echo ${AUTHOR_NAME}
-  - export COMMITTER_EMAIL="${!AUTHOR_NAME}" # email stored in travis custom variable
+before_install:
+  - sudo mkdir /usr/share/fonts/truetype/noto                           # install Chinese font NotoSansCJK TC
+  - sudo cp ./NotoSansCJKtc.otf /usr/share/fonts/truetype/noto          # install Chinese font NotoSansCJK TC
+  - sudo chmod 755 /usr/share/fonts/truetype/noto/NotoSansCJKtc.otf     # install Chinese font NotoSansCJK TC
+  - fc-cache                                                            # install Chinese font NotoSansCJK TC
+
+#before_script:
+  #- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+  #- echo ${COMMITTER_EMAIL}
+  #- echo ${AUTHOR_NAME}
+  #- export COMMITTER_EMAIL="${!AUTHOR_NAME}" # email stored in travis custom variable
+
 
 script:
   - bash build.sh #echo "hi" #
