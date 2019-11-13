@@ -12,9 +12,9 @@ before_script:
 script:
   - bash build.sh
 
-after_success:
-  - bash sendmail.sh
-#notifications:
-#  email:
-#    on_pull_requests: always
+#after_success:
+#  - bash sendmail.sh
+notifications:
+  email:
+    on_pull_requests: always
 

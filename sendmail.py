@@ -36,4 +36,4 @@ try:
     sendmail(email, message, gmail_password)
     print(email, message)
 except:
-    failed.append('failed to sent to ' + email)
+    print('failed to sent to ' + email)
