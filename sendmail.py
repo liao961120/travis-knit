@@ -18,7 +18,7 @@ def sendmail(toEmail, message, gmail_password):
     #gmail_password = '' # your gmail password
 
     msg = MIMEText(message, 'plain', "utf-8")
-    msg['Subject'] = f'Auto knit HTML on Travis-CI'
+    msg['Subject'] = 'Auto knit HTML on Travis-CI'
     msg['From'] = gmail_user
     msg['To'] = toEmail
 
