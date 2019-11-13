@@ -3,5 +3,11 @@ r: 3.5
 cache: packages
 dist: trusty
 
+before_script:
+  - export COMMITTER_EMAIL="$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
+  - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+  - echo ${COMMITTER_EMAIL}
+  - echo ${AUTHOR_NAME}
+
 script:
   - bash build.sh
