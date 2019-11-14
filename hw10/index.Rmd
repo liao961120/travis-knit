@@ -1,0 +1,127 @@
+---
+author: "石晴方 R08142004 語言所"
+title: "HW 10: 中文文本資料處理"
+date: |
+  | 2019-11-14
+  |
+  | [Rmd Source (for TAs)](./index.Rmd){download='`r basename(getwd())`.Rmd'}
+output:
+  html_document:
+    number_sections: yes
+    highlight: tango
+    toc: yes
+    toc_float:
+      collapsed: no
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = '#>', error=TRUE, results = 'hold', out.width='70%', fig.align = 'center', message = FALSE)
+```
+
+文本資料前處理 (共 105 分)
+===========================
+
+文
+
+```{r}
+library(jiebaR)
+
+# Get txt file paths
+fps <- list.files("samesex_marriage/txt", full.names = T)
+# Initialize jiebaR (注意：不要寫在 for loop 內，電腦會爆掉)
+seg <- worker()
+
+# Initialize empty vector to use in for loop
+contents <- vector("character", length(fps))
+
+for (i in seq_along(fps)) {
+  # Read post from file
+  post <- readLines(fps[i], encoding = "UTF-8")
+  
+  # Segment post
+  segged <- segment(post, seg)
+  contents[i] <- paste(segged, collapse = " ")
+}
+
+# Combine results into a df
+docs_df <- tibble::tibble(id = seq_along(contents), content = contents)
+docs_df
+```
+
+上方的程式碼可將純文字檔 (儲存於 `samesex_marriage/txt/*.txt`) 整理成一份 document data frame。其輸出的 data frame (`docs_df`) 基本上就是實習課用到的 `samesex_marriage.rds` (也放在這份作業的資料夾裡) ，但有幾個**重要**差異：
+
+1. `docs_df$content` 的斷詞結果與實習課的略有差異，因為上方的程式碼在斷詞時，並未使用自訂辭典
+2. `docs_df` 只有兩個變項: `id` 與 `content`，但少了 `topic` 與 `title` 這兩個變項
+3. `docs_df$content` 所儲存的內文比 `samesex_marriage.rds` 的還長，因為 `docs_df$content` 包含了文章標題 (文字檔第一行)
+
+你的任務是撰寫一份程式碼 (可參考上方程式碼)，讓其輸出的 data frame 與 `samesex_marriage.rds` 一致。
+
+- 評分標準與提示
+    1. 斷詞時，加入自訂辭典 (字典位於 `samesex_marriage/user_dict.txt`)  (20 分)
+    
+    2. 輸出的 data frame 包含變項 `title` (文章標題) (30 分)
+        - 每篇文章的標題儲存於文字檔的第一行 (第二行為空行)，
+        例如 `samesex_marriage/txt/anti_7.txt` 的第一行為 `同性婚姻與多人婚姻`。
+    
+    3. 輸出的 data frame 的變項 `content` 中，**不包含**文章標題 (i.e. 忽略文字檔第一行) (25 分)
+    
+    4. 輸出的 data frame 包含變項 `topic` (30 分)
+        - 每篇文章的 `topic` 資訊藏在文字檔的檔名中，
+        例如 `samesex_marriage/txt/anti_7.txt` 的 `topic` 為 `anti`；
+        `samesex_marriage/txt/pro_108.txt` 的 `topic` 為 `pro`。
+        你可以透過 `basename()` 與 `strsplit()` 從上方範例程式碼中的 `fps` 取得檔名中的這項資訊。
+    5. 請在程式碼中加入適量**註解** (沒有註解以致程式碼閱讀困難者，酌量扣分)，例如：
+        
+        ```r
+        # Read post from file
+        post <- readLines(fps[i], encoding = "UTF-8")
+        
+        # Extract title
+        title <- ...
+        ```
+```{r}
+# Your code goes here
+# please save the resulting data frame to `docs_df`
+
+
+# 輸出結果請參考 `samesex_marriage.rds`
+# 請勿更動下方程式碼
+knitr::kable(head(docs_df, 3), align = "c")
+```
+
+
+Type-token ratio (15 分)
+===========================
+
+請運用上方整理出來的 data frame (或直接讀取 `samesex_marriage.rds`)，將文章依據 topic 分成兩組，計算出這兩個 topic 的詞彙豐富度 (以 type-token ratio 衡量，定義見下)。你可以使用 `tidytext`、`quanteda` 或是任何其它方法。
+
+```{r}
+# Your code goes here
+
+
+# Should print out:
+# tidytext:
+#
+#> # A tibble: 2 x 2
+#>   topic   TTR
+#>   <chr> <dbl>
+#> 1 anti  0.115
+#> 2 pro   0.173
+#
+# or...
+# quanteda:
+#
+#>   document       TTR
+#> 1     anti 0.1142181
+#> 2      pro 0.1740035
+```
+
+
+### TTR 定義
+
+type-token ratio (TTR) 是一種衡量文本詞彙豐富度的指標，其定義為：
+
+> A type-token ratio (TTR) is the total number of UNIQUE words (types) divided by the total number of words (tokens) in a given segment of language.
+
+例如，`每天 天剛亮 時 我 母親 便 把 我 喊醒` 這句話含有 9 個 tokens。其中，`我` 這個 token 出現了兩次，其它的 token 皆只出現一次，因此總共有 8 種 types。這句話的 type-token ratio 因此為 0.8889 (8/9)。
